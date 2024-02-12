@@ -1,0 +1,49 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: Task manager command side
+
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    username: admin
+    password: admin
+    url: jdbc:postgresql://localhost:5433/taskdb?currentSchema=command_schema
+    hikari:
+      maximum-pool-size: 10
+      connection-timeout: 10_000
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+  rabbitmq:
+    username: guest
+    password: guest
+    addresses: localhost:5673,localhost:15673
+
+  data:
+    mongodb:
+      database: mongodb
+      username: admin
+      password: admin
+      port: 27017
+      host: localhost
+      authentication-database: admin
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+      base-path: /actuator
+  server:
+    port: 8081
+
+springdoc:
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html

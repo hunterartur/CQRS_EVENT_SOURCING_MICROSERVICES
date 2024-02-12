@@ -1,0 +1,64 @@
+version: '3.8'
+services:
+  postgres:
+    env_file:
+      - .env
+    image: postgres:${DATABASE_IMAGE_VERSION}
+    container_name: ${DATABASE_CONTAINER_NAME}
+    environment:
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${DATABASE_DB}
+    ports:
+      - ${DATABASE_EXTERNAL_PORT}:5432
+    volumes:
+      - ${PATH_TO_INIT_FILE}:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - database_net
+
+  broker_messages:
+    env_file:
+      - .env
+    image: rabbitmq:${BROKER_MESSAGES_IMAGE_VERSION}
+    container_name: ${BROKER_MESSAGES_CONTAINER_NAME}
+    ports:
+      - ${BROKER_MESSAGES_PORT_1}:5672
+      - ${BROKER_MESSAGES_PORT_2}:15672
+    volumes:
+      - ${BROKER_MESSAGES_DATA}:/var/lib/rabbitmq
+      - ${BROKER_MESSAGES_LOG}:/var/log/rabbitmq
+    networks:
+      - broker_net
+
+  mongodb:
+    env_file:
+      - .env
+    image: docker.io/bitnami/mongodb:${NOSQL_DATABASE_IMAGE_VERSION}
+    restart: always
+    container_name: ${NOSQL_DATABASE_CONTAINER_NAME}
+    environment:
+      MONGODB_ROOT_USER: ${NOSQL_USER}
+      MONGODB_ROOT_PASSWORD: ${NOSQL_PASSWORD}
+      BITNAMI_DEBUG: "false"
+      ALLOW_EMPTY_PASSWORD: "no"
+      MONGODB_SYSTEM_LOG_VERBOSITY: "0"
+      MONGODB_DISABLE_SYSTEM_LOG: "no"
+      MONGODB_DISABLE_JAVASCRIPT: "no"
+      MONGODB_ENABLE_JOURNAL: "yes"
+      MONGODB_ENABLE_IPV6: "no"
+      MONGODB_ENABLE_DIRECTORY_PER_DB: "no"
+      MONGODB_DATABASE: ${NOSQL_DATABASE_NAME}
+    volumes:
+      - ${NOSQL_VOLUME_PATH}:/data/db
+    ports:
+      - ${NOSQL_PORT}:27017
+    networks:
+      - mongo_net
+
+networks:
+  database_net:
+    driver: bridge
+  broker_net:
+    driver: bridge
+  mongo_net:
+    driver: bridge
