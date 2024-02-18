@@ -11,4 +11,9 @@ import lombok.EqualsAndHashCode;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public abstract class EntityDomainRoot extends IdentifiedDomainObject {
+    /**
+     * Для определения типа репизитория или мапера
+     * @return тип
+     */
+    public abstract String getType();
 }

@@ -12,7 +12,7 @@ public interface EventStore {
 
     List<Event> load(final UUID aggregateId, long version);
 
-    <T extends EntityDomainRoot> void saveEntity(final T entity);
+    <T extends EntityDomainRoot> void saveEntity(final T entity, String type);
 
-    <T extends EntityDomainRoot> void deleteEntity(final T entity);
+    <T extends EntityDomainRoot> void deleteEntity(final T entity, String type);
 }

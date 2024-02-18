@@ -29,11 +29,6 @@ public class AddTaskToProjectCommandService extends ProjectCommandService<AddTas
     }
 
     @Override
-    public String getCommandType() {
-        return AddTaskToProjectCommand.class.getSimpleName();
-    }
-
-    @Override
     protected void checkCommand(AddTaskToProjectCommand command) {
         if (command == null) {
             throwExceptionForNull("Команда");

@@ -29,11 +29,6 @@ public class ChangeProjectNameCommandService extends ProjectCommandService<Chang
     }
 
     @Override
-    public String getCommandType() {
-        return ChangeProjectNameCommand.class.getSimpleName();
-    }
-
-    @Override
     protected void checkCommand(ChangeProjectNameCommand command) {
         if (command == null) {
             throwExceptionForNull("Команда");

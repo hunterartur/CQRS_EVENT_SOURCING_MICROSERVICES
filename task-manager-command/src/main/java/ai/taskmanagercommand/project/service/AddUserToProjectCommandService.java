@@ -29,11 +29,6 @@ public class AddUserToProjectCommandService extends ProjectCommandService<AddUse
     }
 
     @Override
-    public String getCommandType() {
-        return AddUserToProjectCommand.class.getSimpleName();
-    }
-
-    @Override
     protected void checkCommand(AddUserToProjectCommand command) {
         if (command == null) {
             throwExceptionForNull("Команда");

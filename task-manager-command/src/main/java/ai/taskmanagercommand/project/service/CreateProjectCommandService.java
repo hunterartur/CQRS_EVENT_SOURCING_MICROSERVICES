@@ -27,11 +27,6 @@ public class CreateProjectCommandService extends ProjectCommandService<CreatePro
     }
 
     @Override
-    public String getCommandType() {
-        return CreateProjectCommand.class.getSimpleName();
-    }
-
-    @Override
     protected void checkCommand(CreateProjectCommand command) {
         if (command == null) {
             throwExceptionForNull("Команда");

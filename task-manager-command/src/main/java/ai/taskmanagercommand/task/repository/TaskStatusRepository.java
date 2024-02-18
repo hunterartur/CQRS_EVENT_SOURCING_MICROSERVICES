@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.UUID;
 
-@Repository("TASK_STATUS")
+@Repository("TASK_STATUS_REPO")
 public interface TaskStatusRepository extends EntityRepository<TaskStatus, UUID> {
     void deleteById(UUID id);
 }

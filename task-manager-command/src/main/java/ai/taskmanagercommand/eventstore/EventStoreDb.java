@@ -1,9 +1,10 @@
 package ai.taskmanagercommand.eventstore;
 
+import ai.taskmanagercommand.common.RouteKey;
 import ai.taskmanagercommand.exception.AggregateNotFoundException;
+import ai.taskmanagercommand.properties.ProjectQueueProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,26 +34,37 @@ public class EventStoreDb implements EventStore {
 
     private final EventMapper eventMapper;
 
-//    private final EventBus eventBus;
+    private final EventBus eventBus;
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Override
     public <T extends AggregateRoot> void save(T aggregate) {
         final var events = new ArrayList<>(aggregate.getEvents());
 
-//        if (aggregate.getVersion() > 1) {
-//            this.handleConcurrency(aggregate.getId());
-//        }
-//
-//        this.save(events);
-//
-//        if (aggregate.getVersion() % SNAPSHOT_FREQUENCY == 3) {
-//            this.createSnapshot(aggregate);
-//        }
-//
-//        eventBus.publish(events);
+        if (aggregate.getVersion() > 1) {
+            this.handleConcurrency(aggregate.getId());
+        }
+
+        this.save(events);
+
+        if (aggregate.getVersion() % SNAPSHOT_FREQUENCY == 0) {
+            this.createSnapshot(aggregate, aggregate.getType());
+        }
+
+        eventBus.publish(events, ProjectQueueProperties.EXCHANGE, RouteKey.CREATE);
 
         log.info(MessageFormat.format("Агрегат с id={0} сохранен и опубликован в брокер сообщении", aggregate.getId()));
+    }
+
+    private void handleConcurrency(UUID id) {
+
+    }
+
+    private <T extends AggregateRoot> void createSnapshot(T aggregate, String aggregateType) {
+        var mapper = aggregateMappers.get(aggregateType + "_MAPPER");
+        final var snapshot = (AggregateEntityRoot) ((DomainMapper<AggregateRoot, AggregateEntityRoot>) mapper).toSnapshot(aggregate);
+        final var repository = aggregateRepos.get(aggregateType + "_REPO");
+        repository.getClass().cast(repository).save(snapshot);
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -100,13 +112,15 @@ public class EventStoreDb implements EventStore {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Override
-    public <T extends EntityDomainRoot> void saveEntity(T entity) {
-        entityRepos.get()
+    public <T extends EntityDomainRoot> void saveEntity(T entity, String type) {
+        final var mapper = (DomainMapper<EntityDomainRoot, EntityPersistRoot>) entityMappers.get(type + "_MAPPER");
+        final var repo = entityRepos.get(type + "_REPO");
+        repo.getClass().cast(repo).save(mapper.toSnapshot(entity));
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Override
-    public <T extends EntityDomainRoot> void deleteEntity(T entity) {
-
+    public <T extends EntityDomainRoot> void deleteEntity(T entity, String type) {
+        entityRepos.get(type + "_REPO").deleteById(entity.getId());
     }
 }

@@ -22,4 +22,9 @@ public class TaskStatus extends EntityDomainRoot {
      * Цвет статуса
      */
     private String color;
+
+    @Override
+    public String getType() {
+        return "TASK_STATUS";
+    }
 }
