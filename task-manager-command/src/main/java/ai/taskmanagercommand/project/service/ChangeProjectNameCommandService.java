@@ -19,12 +19,12 @@ public class ChangeProjectNameCommandService extends ProjectCommandService<Chang
     @Override
     public void process(ChangeProjectNameCommand command) {
         checkCommand(command);
-        final var aggregate = eventStore.load(command.getAggregateId(), ProjectAggregate.class);
+        final var aggregate = eventStore.load(command.getAggregateId(), ProjectAggregate.class, ProjectAggregate.AGGREGATE_TYPE);
         aggregate.changeName(command.getNewName());
         eventStore.save(aggregate);
         log.info(MessageFormat.format(
                         "Имя проекта с id={0} изменено на {1}",
-                        aggregate.getId(), aggregate.getInformation().getName())
+                        aggregate.getId(), aggregate.getProjectInformation().getName())
         );
     }
 

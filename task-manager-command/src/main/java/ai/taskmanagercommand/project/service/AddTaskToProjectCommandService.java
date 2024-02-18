@@ -19,7 +19,7 @@ public class AddTaskToProjectCommandService extends ProjectCommandService<AddTas
     @Override
     public void process(AddTaskToProjectCommand command) {
         checkCommand(command);
-        final var aggregate = eventStore.load(command.getAggregateId(), ProjectAggregate.class);
+        final var aggregate = eventStore.load(command.getAggregateId(), ProjectAggregate.class, ProjectAggregate.AGGREGATE_TYPE);
         aggregate.addTask(command.getTaskId());
         eventStore.save(aggregate);
         log.info(MessageFormat.format(

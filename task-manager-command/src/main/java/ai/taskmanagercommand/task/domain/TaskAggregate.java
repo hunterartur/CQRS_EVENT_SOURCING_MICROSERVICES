@@ -8,6 +8,9 @@ import ai.taskmanagercommand.task.event.TaskExecutorAssignedEvent;
 import ai.taskmanagercommand.task.event.TaskNameChangedEvent;
 import ai.taskmanagercommand.task.event.TaskStatusChangedEvent;
 import ai.taskmanagercommand.task.valueobject.Information;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +19,9 @@ import java.util.UUID;
 /**
  * Аггрегат TASK
  */
+@Getter
+@Setter
+@EqualsAndHashCode(callSuper = true)
 public class TaskAggregate extends AggregateRoot {
     /**
      * Тип агрегата
@@ -36,7 +42,7 @@ public class TaskAggregate extends AggregateRoot {
     /**
      * Информация
      */
-    private Information information;
+    private Information taskInformation;
 
     public TaskAggregate(UUID id) {
         super(id, AGGREGATE_TYPE);
@@ -59,9 +65,14 @@ public class TaskAggregate extends AggregateRoot {
         }
     }
 
+    @Override
+    public String getType() {
+        return AGGREGATE_TYPE;
+    }
+
     private void process(TaskCreatedEvent event) {
         this.projectId = event.getProjectId();
-        this.information = event.getInformation();
+        this.taskInformation = event.getInformation();
         this.taskStatus = event.getTaskStatus();
     }
 
@@ -74,8 +85,8 @@ public class TaskAggregate extends AggregateRoot {
 
     private void process(TaskNameChangedEvent event) {
         var newName = event.getNewName();
-        var description = this.information.getDescription();
-        this.information = new Information(newName, description);
+        var description = this.taskInformation.getDescription();
+        this.taskInformation = new Information(newName, description);
     }
 
     private void process(TaskStatusChangedEvent event) {

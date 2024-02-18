@@ -8,7 +8,11 @@ public interface EventStore {
 
     void save(final List<Event> events);
 
-    <T extends AggregateRoot> T load(final UUID aggregateId, final Class<T> aggregateType);
+    <T extends AggregateRoot> T load(final UUID aggregateId, final Class<T> aggregateClass, final String aggregateType);
 
     List<Event> load(final UUID aggregateId, long version);
+
+    <T extends EntityDomainRoot> void saveEntity(final T entity);
+
+    <T extends EntityDomainRoot> void deleteEntity(final T entity);
 }

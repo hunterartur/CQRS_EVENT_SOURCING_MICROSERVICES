@@ -19,7 +19,7 @@ public class AddUserToProjectCommandService extends ProjectCommandService<AddUse
     @Override
     public void process(AddUserToProjectCommand command) {
         checkCommand(command);
-        final var aggregate = eventStore.load(command.getAggregateId(), ProjectAggregate.class);
+        final var aggregate = eventStore.load(command.getAggregateId(), ProjectAggregate.class, ProjectAggregate.AGGREGATE_TYPE);
         aggregate.addUser(command.getUserId());
         eventStore.save(aggregate);
         log.info(MessageFormat.format(

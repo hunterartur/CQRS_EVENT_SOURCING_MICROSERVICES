@@ -10,6 +10,7 @@ import java.util.Collection;
 
 @Slf4j
 public abstract class AbstractRabbitMQBindingConfig {
+
     public abstract void declare(RabbitAdmin rabbitAdmin);
 
     protected void binding(RabbitAdmin rabbitAdmin,

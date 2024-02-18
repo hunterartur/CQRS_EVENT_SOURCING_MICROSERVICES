@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 
 public abstract class ProjectCommandService<T extends ProjectCommand> {
     public abstract void process(T command);
+
     public abstract String getCommandType();
 
     protected abstract void checkCommand(@NotNull T command);

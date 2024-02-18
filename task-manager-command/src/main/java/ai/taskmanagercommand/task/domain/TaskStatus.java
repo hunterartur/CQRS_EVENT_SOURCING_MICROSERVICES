@@ -1,6 +1,6 @@
 package ai.taskmanagercommand.task.domain;
 
-import ai.taskmanagercommand.common.IdentifiedDomainObject;
+import ai.taskmanagercommand.eventstore.EntityDomainRoot;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class TaskStatus extends IdentifiedDomainObject {
+public class TaskStatus extends EntityDomainRoot {
     /**
      * Наименование статуса
      */

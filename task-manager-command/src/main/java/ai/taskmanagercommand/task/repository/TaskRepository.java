@@ -1,9 +1,12 @@
 package ai.taskmanagercommand.task.repository;
 
-import ai.taskmanagercommand.task.shanshot.Task;
-import org.springframework.data.jpa.repository.JpaRepository;
+import ai.taskmanagercommand.eventstore.AggregateRepository;
+import ai.taskmanagercommand.task.domain.TaskAggregate;
+import ai.taskmanagercommand.task.snapshot.TaskPersist;
+import org.springframework.stereotype.Repository;
 
 import java.util.UUID;
 
-public interface TaskRepository extends JpaRepository<Task, UUID> {
+@Repository(TaskAggregate.AGGREGATE_TYPE + "_REPO")
+public interface TaskRepository extends AggregateRepository<TaskPersist, UUID> {
 }

@@ -1,8 +1,10 @@
 package ai.taskmanagercommand.project.valueobject;
 
+import ai.taskmanagercommand.eventstore.IdentifiedValueObject;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.io.Serializable;
 
@@ -11,8 +13,9 @@ import java.io.Serializable;
  */
 @NoArgsConstructor
 @Getter
-@EqualsAndHashCode
-public class Information implements Serializable {
+@Setter
+@EqualsAndHashCode(callSuper = false)
+public class Information extends IdentifiedValueObject implements Serializable {
     /**
      * Наименование
      */

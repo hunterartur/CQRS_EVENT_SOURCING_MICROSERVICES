@@ -1,10 +1,12 @@
 package ai.taskmanagercommand.task.repository;
 
-import ai.taskmanagercommand.task.shanshot.TaskStatus;
-import org.springframework.data.jpa.repository.JpaRepository;
+import ai.taskmanagercommand.eventstore.EntityRepository;
+import ai.taskmanagercommand.task.snapshot.TaskStatus;
+import org.springframework.stereotype.Repository;
 
 import java.util.UUID;
 
-public interface TaskStatusRepository extends JpaRepository<TaskStatus, UUID> {
+@Repository("TASK_STATUS")
+public interface TaskStatusRepository extends EntityRepository<TaskStatus, UUID> {
     void deleteById(UUID id);
 }

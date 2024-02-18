@@ -1,10 +1,10 @@
 package ai.taskmanagercommand.eventstore;
 
-import ai.taskmanagercommand.common.IdentifiedDomainObject;
 import ai.taskmanagercommand.exception.InvalidEventAggregateTypeException;
 import ai.taskmanagercommand.exception.InvalidEventException;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 
 import java.text.MessageFormat;
@@ -20,6 +20,7 @@ import java.util.UUID;
 @ToString
 @EqualsAndHashCode(callSuper = true)
 @Getter
+@Setter
 public abstract class AggregateRoot extends IdentifiedDomainObject {
     /**
      * Тип агрегата
@@ -43,6 +44,11 @@ public abstract class AggregateRoot extends IdentifiedDomainObject {
      * Обрабатывает event, в зависимости event.eventType
      */
     public abstract void when(final Event event);
+
+    /**
+     * @return тип агрегата
+     */
+    public abstract String getType();
 
     /**
      * Применяет список событии к агрегату, сохраняя event(добавляет в this.events)
@@ -101,13 +107,13 @@ public abstract class AggregateRoot extends IdentifiedDomainObject {
      */
     protected Event createEvent(String eventType, byte[] data, byte[] metadata) {
         return Event.builder()
-                .withAggregateId(this.id)
-                .withVersion(this.version)
-                .withAggregateType(this.type)
-                .withEventType(eventType)
-                .withData(data == null ? new byte[]{} : data)
-                .withMetaData(metadata == null ? new byte[]{} : metadata)
-                .withTimeStamp(LocalDateTime.now())
+                .aggregateId(this.id)
+                .version(this.version)
+                .aggregateType(this.type)
+                .eventType(eventType)
+                .data(data == null ? new byte[]{} : data)
+                .metadata(metadata == null ? new byte[]{} : metadata)
+                .createdDate(LocalDateTime.now())
                 .build();
     }
 

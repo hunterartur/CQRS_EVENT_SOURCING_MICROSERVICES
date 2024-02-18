@@ -10,6 +10,7 @@ import ai.taskmanagercommand.project.event.UserToProjectAddedEvent;
 import ai.taskmanagercommand.project.valueobject.Information;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +20,7 @@ import java.util.UUID;
  * Аггрегат PROJECT
  */
 @Getter
+@Setter
 @EqualsAndHashCode(callSuper = true)
 public class ProjectAggregate extends AggregateRoot {
     /**
@@ -28,7 +30,7 @@ public class ProjectAggregate extends AggregateRoot {
     /**
      * Информация
      */
-    private Information information;
+    private Information projectInformation;
     /**
      * Участники проекты
      */
@@ -56,16 +58,21 @@ public class ProjectAggregate extends AggregateRoot {
         }
     }
 
+    @Override
+    public String getType() {
+        return AGGREGATE_TYPE;
+    }
+
     private void process(ProjectCreatedEvent event) {
         memberIds = new ArrayList<>(1);
         this.memberIds.add(event.getUserId());
-        this.information = event.getInformation();
+        this.projectInformation = event.getInformation();
     }
 
     private void process(ProjectNameChangedEvent event) {
         String newName = event.getInformation().getName();
-        String description = this.information.getDescription();
-        this.information = new Information(newName, description);
+        String description = this.projectInformation.getDescription();
+        this.projectInformation = new Information(newName, description);
     }
 
     private void process(TaskToProjectAddedEvent event) {
@@ -93,7 +100,7 @@ public class ProjectAggregate extends AggregateRoot {
     public void changeName(String newName) {
         final var data = ProjectNameChangedEvent.builder()
                 .withAggregateId(this.id)
-                .withInformation(new Information(newName, this.information.getDescription()))
+                .withInformation(new Information(newName, this.projectInformation.getDescription()))
                 .build();
         final var dataBytes = SerializerUtil.serializeToJsonBytes(data);
         final var event = this.createEvent(ProjectNameChangedEvent.EVENT_TYPE, dataBytes, null);
